@@ -1,0 +1,29 @@
+# Data (too large for GitHub)
+data/raw/
+data/processed/
+
+# Model weights
+models/*.keras
+models/*.h5
+models/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+venv/
+env/
+.venv/
+.venv311/
+*.pyc
+
+
+
+# OS
+.DS_Store
+Thumbs.db
