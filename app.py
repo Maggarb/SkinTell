@@ -42,7 +42,7 @@ if uploaded_file:
 
     col1, col2 = st.columns(2)
     with col1:
-        st.image(image, caption="Uploaded image", use_column_width=True)
+        st.image(image, caption="Uploaded image", use_container_width=True)
 
     # Preprocess
     img_resized = image.resize(IMG_SIZE)

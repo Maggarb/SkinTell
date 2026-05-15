@@ -6,9 +6,28 @@ Upload a photo → get an instant severity prediction: **Clear, Mild, Moderate, 
 
 ---
 
-## Demo
+## Web App
 
-![SkinTell App](plots/sample_predictions.png)
+SkinTell includes a fully functional web app built with Streamlit. Upload any skin photo and get an instant prediction with a confidence score.
+
+| Home | Prediction |
+|---|---|
+| ![App Home](plots/app_demo.png) | ![App Prediction](plots/app_demo2.png) |
+
+### Running the App
+
+```bash
+# 1. Activate your virtual environment
+.venv311\Scripts\activate  # Windows
+
+# 2. Install streamlit if not already installed
+pip install streamlit
+
+# 3. Run the app
+streamlit run app.py
+```
+
+The app will open automatically at `http://localhost:8501`
 
 ---
 
@@ -75,11 +94,11 @@ py -3.11 -m venv .venv311
 # 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Run the app
+# 4. Run notebooks in order to reproduce the model (01 → 04)
+
+# 5. Run the app
 streamlit run app.py
 ```
-
-To reproduce the model, run notebooks in order (01 → 04) before running the app.
 
 ---
 
@@ -98,7 +117,7 @@ To reproduce the model, run notebooks in order (01 → 04) before running the ap
 
 - The model performs best on **mild** (59% recall) and **moderate** (57% recall) classes
 - **Clear** and **mild** are frequently confused — visually similar at the boundary
-- **Severe** class is the hardest to classify correctly due to limited training data (only 96 images)
+- **Severe** is the hardest class to predict correctly due to very limited training data (only 96 images)
 - Class imbalance is the main limiting factor — more severe and moderate images would significantly improve performance
 - The boundary between severity levels is inherently subjective, which adds noise to the labels
 
@@ -107,6 +126,12 @@ To reproduce the model, run notebooks in order (01 → 04) before running the ap
 ## Confusion Matrix
 
 ![Confusion Matrix](plots/confusion_matrix.png)
+
+---
+
+## Sample Predictions
+
+![Sample Predictions](plots/sample_predictions.png)
 
 ---
 
