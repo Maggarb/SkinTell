@@ -17,8 +17,6 @@ env/
 .venv311/
 *.pyc
 
-
-
 # OS
 .DS_Store
 Thumbs.db
