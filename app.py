@@ -3,6 +3,9 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
+import cv2
+import urllib.request
+import os
 
 # ── Page config ──────────────────────────────────────────────────
 st.set_page_config(
@@ -23,10 +26,31 @@ DESCRIPTIONS = {
     'Severe':   'Severe acne detected. A dermatologist visit is recommended.'
 }
 
+# ── Download face cascade if needed ─────────────────────────────
+CASCADE_PATH = "haarcascade_frontalface_default.xml"
+
+@st.cache_resource
+def load_face_cascade():
+    if not os.path.exists(CASCADE_PATH):
+        url = "https://raw.githubusercontent.com/opencv/opencv/master/data/haarcascades/haarcascade_frontalface_default.xml"
+        urllib.request.urlretrieve(url, CASCADE_PATH)
+    return cv2.CascadeClassifier(CASCADE_PATH)
+
 # ── Load model ───────────────────────────────────────────────────
 @st.cache_resource
 def load_model():
     return tf.keras.models.load_model('models/best_model.keras')
+
+# ── Face detection ───────────────────────────────────────────────
+def contains_face(pil_image, cascade):
+    img_gray = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2GRAY)
+    faces = cascade.detectMultiScale(
+        img_gray,
+        scaleFactor=1.1,
+        minNeighbors=4,
+        minSize=(60, 60)
+    )
+    return len(faces) > 0
 
 # ── UI ───────────────────────────────────────────────────────────
 st.title("🧴 SkinTell")
@@ -44,12 +68,27 @@ if uploaded_file:
     with col1:
         st.image(image, caption="Uploaded image", use_container_width=True)
 
-    # Preprocess
+    # ── Face check ───────────────────────────────────────────────
+    cascade = load_face_cascade()
+    face_found = contains_face(image, cascade)
+
+    if not face_found:
+        with col2:
+            st.warning(
+                "⚠️ No face detected in this image.\n\n"
+                "Please upload a clear, well-lit photo of a face or skin area "
+                "for an accurate result."
+            )
+        st.divider()
+        st.caption("⚠️ SkinTell is a learning project and is not a medical diagnostic tool. Always consult a dermatologist for medical advice.")
+        st.stop()
+
+    # ── Preprocess ───────────────────────────────────────────────
     img_resized = image.resize(IMG_SIZE)
     img_array  = np.array(img_resized) / 255.0
     img_array  = np.expand_dims(img_array, axis=0)
 
-    # Predict
+    # ── Predict ──────────────────────────────────────────────────
     with st.spinner("Analyzing..."):
         model = load_model()
         predictions = model.predict(img_array)[0]
@@ -70,7 +109,7 @@ if uploaded_file:
         st.write("")
         st.info(DESCRIPTIONS[predicted_class])
 
-    # Probability bar chart
+    # ── Probability bar chart ─────────────────────────────────────
     st.divider()
     st.markdown("#### Confidence per class")
     fig, ax = plt.subplots(figsize=(8, 3))
