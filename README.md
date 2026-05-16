@@ -1,4 +1,4 @@
-# SkinTell 🧴
+# SkinTell https://skintell.streamlit.app/
 
 A computer vision web app that classifies acne severity from facial images using deep learning and transfer learning with MobileNetV2.
 
